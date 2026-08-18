@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const { initializeDatabase } = require('./db/schema');
+const { seedDatabase } = require('./db/seed');
 const { authenticateToken, requireAdmin } = require('./middleware/auth');
 
 // Import routes
@@ -27,15 +28,9 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Middleware
+// Middleware - Allow requests from localhost, Vercel deployments, and production domains
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5173',
-    process.env.FRONTEND_URL,
-    'https://appleid.apple.com'
-  ].filter(Boolean),
+  origin: true,
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -116,8 +111,23 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Initialize database and start server
+// Seed endpoint (auto or manual trigger)
+app.get('/api/seed', (req, res) => {
+  try {
+    seedDatabase();
+    res.json({ status: 'ok', message: 'Database seeded successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Initialize database and auto-seed sample products if empty
 initializeDatabase();
+try {
+  seedDatabase();
+} catch (seedErr) {
+  console.log('Seed check:', seedErr.message);
+}
 
 app.listen(PORT, () => {
   console.log(`\n🏪 House of Srivithra API Server`);
