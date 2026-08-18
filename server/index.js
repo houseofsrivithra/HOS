@@ -29,7 +29,13 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'https://appleid.apple.com'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://127.0.0.1:5173',
+    process.env.FRONTEND_URL,
+    'https://appleid.apple.com'
+  ].filter(Boolean),
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));

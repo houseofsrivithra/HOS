@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Plus, Search, Edit2, Trash2, X, Upload, ImageOff, Star, Sparkles, Info } from 'lucide-react';
-import { apiGet, apiDelete, formatPrice, getProductImage, CATEGORY_IMAGES } from '../../api';
+import { apiGet, apiDelete, formatPrice, getProductImage, CATEGORY_IMAGES, API_URL } from '../../api';
 import './Admin.css';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = `${API_URL}/api`;
 const CATEGORIES = ['Sarees', 'Kurtas & Suits', 'Lehengas', 'Dresses', 'Men Ethnic', 'Sherwani', 'Accessories'];
 const emptyProduct = {
   name: '', description: '', short_description: '', price: '', original_price: '',
@@ -348,7 +348,7 @@ export default function Products() {
                   <div className="admin-image-grid">
                     {existingImages.map((url, idx) => (
                       <div key={`ex-${idx}`} className="admin-image-thumb">
-                        <img src={url.startsWith('http') || url.startsWith('/images') ? url : `http://localhost:3001${url}`} alt={`Image ${idx + 1}`} />
+                        <img src={url.startsWith('http') || url.startsWith('/images') ? url : `${API_URL}${url}`} alt={`Image ${idx + 1}`} />
                         <button type="button" className="admin-image-remove" onClick={() => removeExistingImage(idx)} title="Remove image"><X size={12} /></button>
                         {idx === 0 && <span className="admin-image-primary-badge">Main</span>}
                       </div>

@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:3001/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_BASE = `${API_URL}/api`;
 
 export async function api(endpoint, options = {}) {
   const token = localStorage.getItem('auth_token');
@@ -125,7 +126,7 @@ export function getProductImage(images, index = 0) {
   }
   const img = images[index] || images[0];
   if (img.startsWith('http') || img.startsWith('/images')) return img;
-  return `http://localhost:3001${img}`;
+  return `${API_URL}${img}`;
 }
 
 // Category image mapping
