@@ -73,7 +73,13 @@ export default function Account() {
                         <div className="account-order-header">
                           <div>
                             <span className="account-order-number">{order.order_number}</span>
-                            <span className="account-order-date">{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            <span className="account-order-date">
+                              {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {' · '}
+                              <span style={{ textTransform: 'capitalize' }}>
+                                {order.payment_method === 'razorpay' ? 'Paid via Razorpay' : order.payment_method?.toUpperCase()}
+                              </span>
+                            </span>
                           </div>
                           <span className={`badge ${statusColors[order.status] || 'badge-info'}`}>{order.status}</span>
                         </div>

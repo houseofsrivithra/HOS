@@ -36,6 +36,7 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  background: white;
 }
 .payment-option::before {
   content: '';
@@ -50,19 +51,13 @@
 .payment-option.active {
   border-color: var(--moss-green);
   background: rgba(126, 140, 84, 0.04);
-  box-shadow: 0 0 0 3px rgba(126, 140, 84, 0.1);
+  box-shadow: 0 0 0 3px rgba(126, 140, 84, 0.12);
+}
+.payment-option.razorpay-active {
+  border-color: #7E8C54;
+  background: linear-gradient(135deg, rgba(126, 140, 84, 0.06) 0%, rgba(126, 140, 84, 0.02) 100%);
 }
 .payment-option input { display: none; }
-
-/* Razorpay option — premium gradient border */
-.payment-option-razorpay {
-  border-color: #e2e8d0;
-}
-.payment-option-razorpay.active {
-  border-color: var(--moss-green);
-  background: linear-gradient(135deg, rgba(126,140,84,0.05) 0%, rgba(100,149,180,0.03) 100%);
-  box-shadow: 0 0 0 3px rgba(126, 140, 84, 0.12), 0 4px 16px rgba(126, 140, 84, 0.08);
-}
 
 /* Icons */
 .payment-option-icon {
@@ -81,13 +76,56 @@
   background: var(--moss-green);
   color: white;
 }
-.razorpay-icon { background: linear-gradient(135deg, #7E8C54, #5f6d3c); color: white; }
-.payment-option-razorpay.active .razorpay-icon { background: linear-gradient(135deg, #6b7848, #4e5a32); }
+
+/* Razorpay Icon */
+.razorpay-icon {
+  background: linear-gradient(135deg, #0c2340, #173b6c);
+  color: #528FF0;
+}
+.payment-option.active .razorpay-icon {
+  background: linear-gradient(135deg, #7E8C54, #5c683b);
+  color: white;
+}
+
+/* UPI icon */
+.upi-icon {
+  background: linear-gradient(135deg, #ff6b35, #f7941d);
+  color: white;
+}
+.payment-option.active .upi-icon {
+  background: linear-gradient(135deg, #e55a27, #d4780e);
+}
 
 /* Content inside option */
-.payment-option-content { flex: 1; }
-.payment-option-content strong { display: block; font-size: var(--text-sm); font-weight: 600; margin-bottom: 2px; }
-.payment-option-content span { font-size: var(--text-xs); color: var(--text-muted); }
+.payment-option-content { flex: 1; min-width: 0; }
+.payment-option-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+.payment-option-content strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--charcoal);
+}
+.payment-option-content span {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  display: block;
+}
+
+.recommended-tag {
+  display: inline-block;
+  background: #7E8C54;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
 
 /* Payment method badges */
 .payment-method-badges {
@@ -111,6 +149,7 @@
 .phonePe-badge { background: #f3e5f5; color: #4a148c; }
 .card-badge   { background: #e3f2fd; color: #0d47a1; }
 .nb-badge     { background: #fce4ec; color: #880e4f; }
+.wallet-badge { background: #ede7f6; color: #512da8; }
 
 /* Selected badge */
 .payment-option-selected-badge {
@@ -127,7 +166,70 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-.cod-badge { color: #5c4a1e; background: rgba(200, 170, 80, 0.12); border-color: rgba(200, 170, 80, 0.25); }
+.razorpay-badge-selected {
+  color: #4b582a;
+  background: rgba(126, 140, 84, 0.15);
+  border-color: rgba(126, 140, 84, 0.3);
+}
+.cod-badge {
+  color: #5c4a1e;
+  background: rgba(200, 170, 80, 0.12);
+  border-color: rgba(200, 170, 80, 0.25);
+}
+
+/* ─── Razorpay Feature Panel ─────────────────── */
+.razorpay-feature-panel {
+  background: linear-gradient(135deg, rgba(126, 140, 84, 0.05) 0%, rgba(126, 140, 84, 0.02) 100%);
+  border: 1.5px solid rgba(126, 140, 84, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.razorpay-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(126, 140, 84, 0.1);
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--moss-green-dark, #4b582a);
+  border-bottom: 1px solid rgba(126, 140, 84, 0.15);
+}
+
+.razorpay-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
+.razorpay-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.razorpay-feature-item .feature-icon {
+  color: var(--moss-green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.razorpay-feature-item strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--charcoal);
+  margin-bottom: 2px;
+}
+
+.razorpay-feature-item p {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin: 0;
+}
 
 /* ─── Pay Now Button ─────────────────────────── */
 .pay-now-btn {
@@ -223,6 +325,27 @@
 .checkout-success-icon { color: var(--moss-green); }
 .checkout-success h1 { font-family: var(--font-heading); font-size: var(--text-4xl); margin-bottom: var(--space-3); }
 .checkout-success-order { font-family: var(--font-accent); font-size: var(--text-lg); color: var(--moss-green); font-weight: 600; margin-bottom: var(--space-2); }
+
+.checkout-payment-badge-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.checkout-payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(126, 140, 84, 0.12);
+  color: var(--moss-green-dark, #4b582a);
+  border: 1px solid rgba(126, 140, 84, 0.3);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 .checkout-payment-id { font-size: var(--text-xs); color: var(--text-muted); background: var(--sand-beige-light); border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); display: inline-block; margin-bottom: var(--space-3); letter-spacing: 0.5px; }
 .checkout-success-note { font-size: var(--text-sm); color: var(--text-muted); margin-top: var(--space-2); }
 .checkout-success-actions { display: flex; gap: var(--space-4); justify-content: center; margin-top: var(--space-8); }
@@ -235,4 +358,246 @@
   .checkout-step span { display: none; }
   .payment-option-selected-badge { display: none; }
   .payment-method-badges { display: none; }
+  .razorpay-features-grid { grid-template-columns: 1fr; }
+  .upi-panel-body { grid-template-columns: 1fr; }
+  .upi-divider { display: none; }
+}
+
+/* ─── UPI Payment Panel ───────────────────────── */
+.upi-payment-panel {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.03) 0%, rgba(247, 148, 29, 0.04) 100%);
+  border: 1.5px solid rgba(255, 107, 53, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.upi-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(247, 148, 29, 0.08));
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c84b0f;
+  border-bottom: 1px solid rgba(255, 107, 53, 0.15);
+}
+
+.upi-panel-body {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 0;
+  padding: 20px;
+}
+
+/* QR section */
+.upi-qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.upi-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #c84b0f;
+  margin-bottom: 10px;
+}
+
+.upi-qr-wrapper {
+  position: relative;
+  display: inline-block;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 107, 53, 0.2);
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.1);
+}
+
+.upi-qr-img {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.upi-qr-amount {
+  background: linear-gradient(135deg, #ff6b35, #f7941d);
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.upi-qr-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  max-width: 160px;
+  line-height: 1.4;
+}
+
+/* Divider */
+.upi-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+  align-self: stretch;
+}
+
+.upi-divider::before,
+.upi-divider::after {
+  content: '';
+  flex: 1;
+  width: 1px;
+  background: rgba(255, 107, 53, 0.2);
+}
+
+.upi-divider span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c84b0f;
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 20px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+/* UPI ID section */
+.upi-id-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.upi-id-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1.5px solid rgba(255, 107, 53, 0.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.06);
+}
+
+.upi-id-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  gap: 2px;
+}
+
+.upi-id-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #c84b0f;
+}
+
+.upi-id-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2e2e2e;
+  font-family: var(--font-accent);
+  word-break: break-all;
+}
+
+.upi-id-name {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.upi-copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #ff6b35, #f7941d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.upi-copy-btn:hover {
+  background: linear-gradient(135deg, #e55a27, #d4780e);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+/* Transaction ID section */
+.upi-txn-section {
+  padding: 16px 20px;
+  border-top: 1px dashed rgba(255, 107, 53, 0.2);
+  background: rgba(255, 107, 53, 0.02);
+}
+
+.upi-txn-hint {
+  font-size: 12px;
+  color: var(--charcoal-light);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.upi-txn-input-wrapper { margin-bottom: 10px; }
+
+.upi-txn-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(255, 107, 53, 0.3);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  color: #2e2e2e;
+  font-family: var(--font-accent);
+  letter-spacing: 0.5px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.upi-txn-input:focus {
+  outline: none;
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+}
+
+.upi-txn-input::placeholder { color: #aaa; font-family: inherit; letter-spacing: 0; }
+
+.upi-txn-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ─── COD benefits panel ─────────────────────── */
+.cod-benefits-panel {
+  background: rgba(126, 140, 84, 0.06);
+  border: 1px solid rgba(126, 140, 84, 0.2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }

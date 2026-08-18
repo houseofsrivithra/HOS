@@ -62,7 +62,6 @@ export default function Contact() {
             </div>
             <h3>Email Us</h3>
             <p>Houseofsrivithra@gmail.com</p>
-            <p>support@houseofsrivithra.com</p>
           </div>
           <div className="contact-info-card">
             <div className="contact-info-icon">

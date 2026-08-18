@@ -390,10 +390,10 @@ function seedDatabase() {
   });
 
   // --- ADMIN USER ---
-  const password_hash = bcrypt.hashSync('admin@123', 10);
+  const password_hash = bcrypt.hashSync('Hos@2025', 10);
   db.prepare(
     'INSERT INTO users (name, email, password_hash, phone, role) VALUES (?, ?, ?, ?, ?)'
-  ).run('Admin', 'srivithra@gmail.com', password_hash, '+91 9876543210', 'admin');
+  ).run('Admin', 'Houseofsrivithra@gmail.com', password_hash, '+91 9876543210', 'admin');
 
   // --- SITE CONTENT ---
   const contentItems = [

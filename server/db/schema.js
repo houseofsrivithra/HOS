@@ -141,10 +141,10 @@ function ensureAdminUser() {
   const bcrypt = require('bcryptjs');
   const db = getDb();
   try {
-    const adminEmail = 'srivithra@gmail.com';
-    const passwordHash = bcrypt.hashSync('admin@123', 10);
+    const adminEmail = 'Houseofsrivithra@gmail.com';
+    const passwordHash = bcrypt.hashSync('Hos@2025', 10);
 
-    const existingAdmin = db.prepare('SELECT id, email FROM users WHERE email = ? OR role = ?').get(adminEmail, 'admin');
+    const existingAdmin = db.prepare('SELECT id, email FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(email) = LOWER(?) OR role = ?').get(adminEmail, 'srivithra@gmail.com', 'admin');
 
     if (existingAdmin) {
       db.prepare('UPDATE users SET email = ?, password_hash = ?, role = ? WHERE id = ?').run(

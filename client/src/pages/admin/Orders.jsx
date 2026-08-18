@@ -140,7 +140,17 @@ export default function Orders() {
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Order:</strong> {selectedOrder.order_number}</p>
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Customer:</strong> {selectedOrder.user_name}</p>
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Email:</strong> {selectedOrder.user_email}</p>
-              <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Payment:</strong> {selectedOrder.payment_method?.toUpperCase()}</p>
+              <p style={{ fontSize: 13, marginBottom: 4 }}>
+                <strong>Payment:</strong>{' '}
+                <span style={{ textTransform: 'uppercase', fontWeight: 600, color: selectedOrder.payment_method === 'razorpay' ? 'var(--moss-green)' : 'inherit' }}>
+                  {selectedOrder.payment_method === 'razorpay' ? 'Razorpay (Online Verified)' : selectedOrder.payment_method?.toUpperCase()}
+                </span>
+              </p>
+              {selectedOrder.notes && (
+                <div style={{ fontSize: 12, color: 'var(--charcoal-light)', marginBottom: 10, background: 'rgba(126,140,84,0.08)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(126,140,84,0.15)' }}>
+                  <strong>Ref / Note:</strong> {selectedOrder.notes}
+                </div>
+              )}
               <p style={{ fontSize: 13, marginBottom: 16 }}>
                 <strong>Status:</strong> <span className={`badge ${statusColors[selectedOrder.status]}`}>{selectedOrder.status}</span>
               </p>

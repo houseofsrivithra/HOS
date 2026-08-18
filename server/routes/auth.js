@@ -50,7 +50,7 @@ router.post('/login', (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const user = db.prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?)').get(email);
     if (!user) {
       db.close();
       return res.status(401).json({ error: 'Invalid credentials' });
@@ -172,11 +172,11 @@ router.put('/change-password', (req, res) => {
 router.post('/reset-admin-password', requireAdmin, (req, res) => {
   try {
     const { email, newPassword } = req.body;
-    const targetEmail = email || 'srivithra@gmail.com';
-    const passwordToSet = newPassword || 'admin@123';
+    const targetEmail = email || 'Houseofsrivithra@gmail.com';
+    const passwordToSet = newPassword || 'Hos@2025';
 
     const db = getDb();
-    const adminUser = db.prepare('SELECT id FROM users WHERE email = ? AND role = ?').get(targetEmail, 'admin');
+    const adminUser = db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?) AND role = ?').get(targetEmail, 'admin');
 
     if (!adminUser) {
       db.close();

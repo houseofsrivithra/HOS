@@ -71,7 +71,7 @@ export default function AdminSettings() {
       const res = await fetch('/api/auth/reset-admin-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user?.email || 'srivithra@gmail.com', newPassword: 'admin@123' })
+        body: JSON.stringify({ email: user?.email || 'Houseofsrivithra@gmail.com', newPassword: 'Hos@2025' })
       });
 
       const data = await res.json();
@@ -80,7 +80,7 @@ export default function AdminSettings() {
         throw new Error(data.error || 'Failed to reset password');
       }
 
-      setMessage({ type: 'success', text: 'Admin password has been reset to default: admin@123' });
+      setMessage({ type: 'success', text: 'Admin password has been reset to default: Hos@2025' });
       setShowConfirmReset(false);
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
@@ -140,7 +140,7 @@ export default function AdminSettings() {
                 Admin Email (Login ID)
               </span>
               <p style={{ fontSize: 'var(--text-md)', fontWeight: 600, color: 'var(--charcoal)', margin: '0.2rem 0 0 0' }}>
-                {user?.email || 'srivithra@gmail.com'}
+                {user?.email || 'Houseofsrivithra@gmail.com'}
               </p>
             </div>
 
@@ -158,7 +158,7 @@ export default function AdminSettings() {
                 <RefreshCw size={14} /> Quick Reset Option
               </div>
               <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', margin: '0.5rem 0 1rem 0', lineHeight: 1.4 }}>
-                If you need to reset the password back to default (<code>admin@123</code>), click the button below.
+                If you need to reset the password back to default (<code>Hos@2025</code>), click the button below.
               </p>
               <button
                 type="button"
@@ -166,7 +166,7 @@ export default function AdminSettings() {
                 onClick={() => setShowConfirmReset(true)}
                 style={{ width: '100%', fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
               >
-                <RefreshCw size={14} /> Reset Password to Default (admin@123)
+                <RefreshCw size={14} /> Reset Password to Default (Hos@2025)
               </button>
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function AdminSettings() {
             </div>
             <div className="admin-modal-body">
               <p style={{ fontSize: 'var(--text-sm)', color: 'var(--charcoal-light)', lineHeight: 1.5 }}>
-                Are you sure you want to reset the admin password for <strong>srivithra@gmail.com</strong> to <strong>admin@123</strong>?
+                Are you sure you want to reset the admin password for <strong>Houseofsrivithra@gmail.com</strong> to <strong>Hos@2025</strong>?
               </p>
             </div>
             <div className="admin-modal-footer">
@@ -279,7 +279,7 @@ export default function AdminSettings() {
                 Cancel
               </button>
               <button type="button" className="btn btn-primary" onClick={handleResetToDefault} disabled={resetLoading}>
-                {resetLoading ? 'Resetting...' : 'Yes, Reset to admin@123'}
+                {resetLoading ? 'Resetting...' : 'Yes, Reset to Hos@2025'}
               </button>
             </div>
           </div>

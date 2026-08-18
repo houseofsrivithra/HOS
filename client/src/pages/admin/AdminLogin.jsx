@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import './Admin.css';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('srivithra@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,7 +60,7 @@ export default function AdminLogin() {
       const res = await fetch('/api/auth/reset-admin-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'srivithra@gmail.com', newPassword: 'admin@123' })
+        body: JSON.stringify({ email: 'Houseofsrivithra@gmail.com', newPassword: 'Hos@2025' })
       });
       const data = await res.json();
 
@@ -68,9 +68,9 @@ export default function AdminLogin() {
         throw new Error(data.error || 'Failed to reset password');
       }
 
-      setSuccessMsg('Admin password has been reset to default: admin@123');
-      setEmail('srivithra@gmail.com');
-      setPassword('admin@123');
+      setSuccessMsg('Admin password has been reset to default: Hos@2025');
+      setEmail('Houseofsrivithra@gmail.com');
+      setPassword('Hos@2025');
       setShowResetModal(false);
     } catch (err) {
       setError(err.message || 'Error resetting password');
@@ -98,41 +98,6 @@ export default function AdminLogin() {
         <div className="admin-login-card">
           <h2>Admin Authentication</h2>
           <p className="admin-login-subtitle">Enter your admin credentials to access the dashboard</p>
-
-          {/* Preset hint */}
-          <div style={{
-            background: 'rgba(197, 168, 128, 0.08)',
-            border: '1px dashed rgba(197, 168, 128, 0.3)',
-            borderRadius: '10px',
-            padding: '0.65rem 0.85rem',
-            marginBottom: '1.25rem',
-            fontSize: '0.78rem',
-            color: '#c5a880',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div>
-              <strong>Admin Email:</strong> srivithra@gmail.com<br />
-              <strong>Default Password:</strong> admin@123
-            </div>
-            <button
-              type="button"
-              onClick={() => { setEmail('srivithra@gmail.com'); setPassword('admin@123'); }}
-              style={{
-                background: 'rgba(197, 168, 128, 0.15)',
-                border: '1px solid rgba(197, 168, 128, 0.3)',
-                color: '#c5a880',
-                padding: '0.3rem 0.6rem',
-                borderRadius: '6px',
-                fontSize: '0.72rem',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
-            >
-              Fill Demo
-            </button>
-          </div>
 
           {error && (
             <div className="admin-login-error">
@@ -169,7 +134,7 @@ export default function AdminLogin() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="srivithra@gmail.com"
+                  placeholder="Houseofsrivithra@gmail.com"
                   required
                   autoFocus
                 />
@@ -201,7 +166,7 @@ export default function AdminLogin() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password (e.g. admin@123)"
+                  placeholder="Enter your password"
                   required
                 />
                 <button
@@ -251,7 +216,7 @@ export default function AdminLogin() {
             </div>
             <div className="admin-modal-body">
               <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                Would you like to reset the admin password for <strong>srivithra@gmail.com</strong> back to default (<strong>admin@123</strong>)?
+                Would you like to reset the admin password for <strong>Houseofsrivithra@gmail.com</strong> back to default (<strong>Hos@2025</strong>)?
               </p>
             </div>
             <div className="admin-modal-footer" style={{ borderColor: '#2d2f42' }}>
@@ -270,7 +235,7 @@ export default function AdminLogin() {
                 disabled={resetLoading}
                 style={{ background: '#c5a880', color: '#0d0d12', border: 'none', fontWeight: 600 }}
               >
-                {resetLoading ? 'Resetting...' : 'Confirm Reset to admin@123'}
+                {resetLoading ? 'Resetting...' : 'Confirm Reset to Hos@2025'}
               </button>
             </div>
           </div>
