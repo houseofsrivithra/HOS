@@ -1,0 +1,220 @@
+.footer {
+  margin-top: auto;
+}
+
+/* Trust Bar */
+.footer-trust-bar {
+  background: white;
+  border-top: 1px solid var(--sand-beige-light);
+  padding: var(--space-8) 0;
+}
+
+.footer-trust-items {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+}
+
+.footer-trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.footer-trust-item svg {
+  color: var(--moss-green);
+  flex-shrink: 0;
+}
+
+.footer-trust-item strong {
+  font-family: var(--font-accent);
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+}
+
+.footer-trust-item span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Credentials */
+.footer-credentials {
+  background: var(--moss-green);
+  padding: var(--space-5) 0;
+}
+
+.footer-credentials-items {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.footer-credential {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: white;
+}
+
+.footer-credential-icon {
+  font-size: 16px;
+}
+
+.footer-credential strong {
+  font-family: var(--font-accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.footer-credential span {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-left: var(--space-1);
+}
+
+/* Main footer */
+.footer-main {
+  background: var(--charcoal);
+  color: white;
+  padding: var(--space-16) 0;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: var(--space-12);
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.footer-logo-icon {
+  font-size: 24px;
+  color: var(--antique-gold);
+}
+
+.footer-logo-sub {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  opacity: 0.7;
+}
+
+.footer-logo-main {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  display: block;
+}
+
+.footer-brand-desc {
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  opacity: 0.7;
+  margin-bottom: var(--space-6);
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.footer-social-link {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  color: white;
+  transition: all var(--transition-fast);
+}
+
+.footer-social-link:hover {
+  background: var(--antique-gold);
+  border-color: var(--antique-gold);
+  transform: translateY(-2px);
+}
+
+.footer-links-group h4 {
+  font-family: var(--font-accent);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-6);
+  color: white;
+}
+
+.footer-links-group ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer-links-group li,
+.footer-links-group a {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.65);
+  transition: color var(--transition-fast);
+}
+
+.footer-links-group a:hover {
+  color: var(--antique-gold);
+}
+
+/* Copyright */
+.footer-copyright {
+  background: #222;
+  padding: var(--space-4) 0;
+}
+
+.footer-copyright .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copyright p {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-copyright-links {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.footer-copyright-links a {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.5);
+  transition: color var(--transition-fast);
+}
+
+.footer-copyright-links a:hover {
+  color: var(--antique-gold);
+}
+
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+  .footer-trust-items { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-credentials-items { flex-wrap: wrap; justify-content: center; }
+  .footer-trust-items { grid-template-columns: 1fr; gap: var(--space-4); }
+  .footer-copyright .container { flex-direction: column; gap: var(--space-2); text-align: center; }
+}

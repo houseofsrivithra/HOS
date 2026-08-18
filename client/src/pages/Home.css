@@ -1,0 +1,293 @@
+.home-page {
+  min-height: 100vh;
+}
+
+/* Carousel */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.carousel-track {
+  display: flex;
+  gap: var(--space-6);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: var(--space-2);
+  flex: 1;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-item {
+  min-width: 220px;
+  max-width: 220px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.carousel-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--sand-beige);
+  background: white;
+  color: var(--charcoal);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.carousel-btn:hover {
+  border-color: var(--moss-green);
+  color: var(--moss-green);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Bottom section grid */
+.home-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* Best Sellers */
+.best-sellers-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--sand-beige-light);
+}
+
+.best-sellers-header .section-title::after {
+  display: none;
+}
+
+.best-sellers-view-all {
+  font-family: var(--font-accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--moss-green);
+  transition: color var(--transition-fast);
+}
+
+.best-sellers-view-all:hover {
+  color: var(--moss-green-dark);
+}
+
+.best-sellers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+/* Newsletter */
+.newsletter-card {
+  background: var(--sand-beige-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10) var(--space-8);
+}
+
+.newsletter-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.newsletter-desc {
+  font-size: var(--text-sm);
+  color: var(--charcoal-light);
+  line-height: 1.6;
+  margin-bottom: var(--space-6);
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--sand-beige-dark);
+}
+
+.newsletter-form input {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  font-size: var(--text-sm);
+  padding: var(--space-3) var(--space-4);
+  background: white;
+}
+
+.newsletter-form input:focus {
+  box-shadow: none;
+}
+
+.newsletter-btn {
+  border-radius: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  padding: var(--space-3) var(--space-5);
+}
+
+.newsletter-success {
+  font-size: var(--text-sm);
+  color: var(--success);
+  margin-top: var(--space-3);
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .home-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+  .best-sellers-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .best-sellers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .carousel-item {
+    min-width: 180px;
+    max-width: 180px;
+  }
+}
+
+/* ── Featured Dresses Section ─────────────────────────────────── */
+.home-featured-dresses {
+  background: var(--sand-beige-light);
+}
+
+.featured-dresses-header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.featured-dresses-subtitle {
+  font-size: var(--text-base);
+  color: var(--charcoal-light);
+  margin-top: var(--space-2);
+  font-style: italic;
+}
+
+.featured-dresses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+
+.featured-dress-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.featured-dress-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.featured-dress-img-wrap {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: var(--sand-beige-light);
+}
+
+.featured-dress-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featured-dress-card:hover .featured-dress-img {
+  transform: scale(1.06);
+}
+
+.featured-dress-badge {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  background: var(--moss-green);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.featured-dress-info {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.featured-dress-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.featured-dress-desc {
+  font-size: var(--text-sm);
+  color: var(--charcoal-light);
+  line-height: 1.65;
+  flex: 1;
+}
+
+.featured-dress-cta {
+  display: inline-block;
+  font-family: var(--font-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--moss-green);
+  margin-top: var(--space-3);
+  transition: color var(--transition-fast);
+  text-transform: uppercase;
+}
+
+.featured-dress-card:hover .featured-dress-cta {
+  color: var(--moss-green-dark);
+}
+
+@media (max-width: 900px) {
+  .featured-dresses-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .featured-dresses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

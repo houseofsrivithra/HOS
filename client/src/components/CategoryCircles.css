@@ -1,0 +1,112 @@
+.category-circles {
+  padding: var(--space-8) 0 var(--space-12);
+  border-bottom: 1px solid var(--sand-beige-light);
+}
+
+.category-circles-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.category-circles-track {
+  display: flex;
+  gap: var(--space-8);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: var(--space-4) var(--space-2);
+  justify-content: center;
+  flex: 1;
+}
+
+.category-circles-track::-webkit-scrollbar {
+  display: none;
+}
+
+.category-circle-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.category-circle-item:hover {
+  transform: translateY(-4px);
+}
+
+.category-circle-image {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 2px solid var(--sand-beige);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.category-circle-item:hover .category-circle-image {
+  border-color: var(--moss-green);
+  box-shadow: 0 4px 16px rgba(126, 140, 84, 0.2);
+}
+
+.category-circle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.category-circle-item:hover .category-circle-image img {
+  transform: scale(1.1);
+}
+
+.category-circle-name {
+  font-family: var(--font-accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--charcoal);
+  text-align: center;
+}
+
+.category-circle-explore {
+  font-size: 10px;
+  color: var(--moss-green);
+  font-weight: 500;
+}
+
+.category-scroll-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--sand-beige);
+  background: white;
+  color: var(--charcoal);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.category-scroll-btn:hover {
+  border-color: var(--moss-green);
+  color: var(--moss-green);
+  background: rgba(126, 140, 84, 0.05);
+}
+
+@media (max-width: 768px) {
+  .category-circles-track {
+    justify-content: flex-start;
+    gap: var(--space-6);
+  }
+  .category-circle-image {
+    width: 80px;
+    height: 80px;
+  }
+}

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains secrets!)
+.env
+
+# Build output
+dist/
+dist-ssr/
+
+# Database file (will be recreated by seed)
+server/store.db
+
+# Uploaded files (user-generated content)
+server/uploads/products/*
+!server/uploads/products/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.sw?

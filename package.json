@@ -1,0 +1,13 @@
+{
+  "name": "house-of-srivithra",
+  "version": "1.0.0",
+  "description": "House of Srivithra - Premium Indian Ethnic Wear E-Commerce Platform",
+  "scripts": {
+    "dev": "npx -y concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "seed": "cd server && npm run seed",
+    "start": "cd server && npm start"
+  }
+}
