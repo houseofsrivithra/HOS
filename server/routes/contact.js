@@ -29,25 +29,24 @@ router.post('/', async (req, res) => {
     return res.status(500).json({ error: 'Failed to save message. Please try again later.' });
   }
 
-  // Step 2: Attempt to send email (non-blocking — don't fail the request if email fails)
-  let emailSent = false;
-  try {
-    await sendContactEmail({ name, email, phone, subject, message });
-    emailSent = true;
+  // Step 2: Attempt to send email in background (non-blocking)
+  sendContactEmail({ name, email, phone, subject, message })
+    .then(() => {
+      try {
+        const db = getDb();
+        db.prepare('UPDATE contact_messages SET email_sent = 1 WHERE id = ?').run(savedId);
+        db.close();
+      } catch (_) {}
+    })
+    .catch((emailErr) => {
+      console.error('Contact email notification error:', emailErr.message || emailErr);
+    });
 
-    // Mark email as sent in DB
-    const db = getDb();
-    db.prepare('UPDATE contact_messages SET email_sent = 1 WHERE id = ?').run(savedId);
-    db.close();
-  } catch (emailErr) {
-    console.error('Contact form email error (message still saved to DB):', emailErr.message || emailErr);
-    // Email failed but message was saved — still return success to the user
-  }
-
+  // Return instant success response to client
   res.json({
     success: true,
     message: 'Your message has been received! We will get back to you within 24 hours.',
-    emailSent
+    emailSent: true
   });
 });
 
