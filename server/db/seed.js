@@ -564,6 +564,8 @@ function seedDatabase() {
 }
 
 // Run if called directly
-seedDatabase();
+if (require.main === module) {
+  seedDatabase();
+}
 
 module.exports = { seedDatabase };
