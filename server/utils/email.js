@@ -1,4 +1,4 @@
-﻿const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
 const STORE_EMAIL = process.env.GMAIL_USER || 'houseofsrivithra@gmail.com';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'houseofsrivithra@gmail.com'; // All notifications go here
@@ -28,10 +28,10 @@ async function sendContactEmail({ name, email, phone, subject, message }) {
   const transporter = createTransporter();
 
   await transporter.sendMail({
-    from: `"House of Srivithra Website" <${STORE_EMAIL}>`,
+    from: `"${name} via House of Srivithra" <${STORE_EMAIL}>`,
     to: ADMIN_EMAIL,
-    replyTo: email,
-    subject: `[Contact Form] ${subject || 'New Message'} - from ${name}`,
+    replyTo: `"${name}" <${email}>`,
+    subject: `[Contact Form] ${subject || 'New Enquiry'} - from ${name} (${email})`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f6f1; border-radius: 10px; overflow: hidden; border: 1px solid #e8dfd0;">
         <div style="background: #7E8C54; padding: 28px 32px;">
