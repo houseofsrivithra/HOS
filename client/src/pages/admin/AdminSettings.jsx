@@ -3,6 +3,8 @@ import { Shield, KeyRound, CheckCircle2, AlertCircle, RefreshCw, Eye, EyeOff, Lo
 import { useAuth } from '../../context/AuthContext';
 import './Admin.css';
 
+import { apiPut, apiPost } from '../../api';
+
 export default function AdminSettings() {
   const { user } = useAuth();
 
@@ -36,21 +38,7 @@ export default function AdminSettings() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('/api/auth/change-password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ currentPassword, newPassword })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to change password');
-      }
+      await apiPut('/auth/change-password', { currentPassword, newPassword });
 
       setMessage({ type: 'success', text: 'Password updated successfully!' });
       setCurrentPassword('');
@@ -68,17 +56,10 @@ export default function AdminSettings() {
     setMessage({ type: '', text: '' });
 
     try {
-      const res = await fetch('/api/auth/reset-admin-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user?.email || 'Houseofsrivithra@gmail.com', newPassword: 'Hos@2025' })
+      await apiPost('/auth/reset-admin-password', {
+        email: user?.email || 'Houseofsrivithra@gmail.com',
+        newPassword: 'Hos@2025'
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to reset password');
-      }
 
       setMessage({ type: 'success', text: 'Admin password has been reset to default: Hos@2025' });
       setShowConfirmReset(false);

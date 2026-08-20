@@ -4,6 +4,8 @@ import { ShieldCheck, Eye, EyeOff, Lock, User, AlertCircle, ArrowLeft, RefreshCw
 import { useAuth } from '../../context/AuthContext';
 import './Admin.css';
 
+import { apiPost } from '../../api';
+
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,16 +59,10 @@ export default function AdminLogin() {
     setSuccessMsg('');
 
     try {
-      const res = await fetch('/api/auth/reset-admin-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'Houseofsrivithra@gmail.com', newPassword: 'Hos@2025' })
+      await apiPost('/auth/reset-admin-password', {
+        email: 'Houseofsrivithra@gmail.com',
+        newPassword: 'Hos@2025'
       });
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to reset password');
-      }
 
       setSuccessMsg('Admin password has been reset to default: Hos@2025');
       setEmail('Houseofsrivithra@gmail.com');
