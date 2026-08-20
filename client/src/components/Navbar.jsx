@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, User, Heart, ShoppingBag, Menu, X, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
@@ -8,16 +8,142 @@ import './Navbar.css';
 
 const NAV_LINKS = [
   { label: 'HOME', path: '/' },
-  { label: 'WOMEN', path: '/shop?category=Sarees' },
-  { label: 'MEN', path: '/shop?category=Men%20Ethnic' },
-  { label: 'NEW ARRIVALS', path: '/shop?new_arrivals=true' },
-  { label: 'SAREES', path: '/shop?category=Sarees' },
+  {
+    label: 'WOMEN', path: '/shop?category=Sarees',
+    subcategories: [
+      { name: 'Sarees', path: '/shop?category=Sarees', description: 'Silk, Georgette, Banarasi & more' },
+      { name: 'Kurtas & Suits', path: '/shop?category=Kurtas%20%26%20Suits', description: 'Embroidered, Printed & Designer' },
+      { name: 'Lehengas', path: '/shop?category=Lehengas', description: 'Bridal, Party & Festive wear' },
+      { name: 'Dresses', path: '/shop?category=Dresses', description: 'Indo-Western & Fusion styles' },
+    ]
+  },
+  {
+    label: 'MEN', path: '/shop?category=Men%20Ethnic',
+    subcategories: [
+      { name: 'Men Ethnic', path: '/shop?category=Men%20Ethnic', description: 'Kurtas, Nehru Jackets & more' },
+      { name: 'Sherwani', path: '/shop?category=Sherwani', description: 'Wedding & Celebration wear' },
+    ]
+  },
+  {
+    label: 'NEW ARRIVALS', path: '/shop?new_arrivals=true',
+    subcategories: [
+      { name: 'New in Sarees', path: '/shop?new_arrivals=true&category=Sarees', description: 'Latest saree collections' },
+      { name: 'New in Kurtas', path: '/shop?new_arrivals=true&category=Kurtas%20%26%20Suits', description: 'Fresh kurta arrivals' },
+      { name: 'New in Lehengas', path: '/shop?new_arrivals=true&category=Lehengas', description: 'Newest lehenga designs' },
+      { name: 'View All New', path: '/shop?new_arrivals=true', description: 'Browse all new arrivals' },
+    ]
+  },
+  {
+    label: 'SAREES', path: '/shop?category=Sarees',
+    subcategories: [
+      { name: 'All Sarees', path: '/shop?category=Sarees', description: 'Browse the full collection' },
+      { name: 'Best Sellers', path: '/shop?category=Sarees&best_sellers=true', description: 'Most loved by our customers' },
+      { name: 'New Arrivals', path: '/shop?category=Sarees&new_arrivals=true', description: 'Just added to our collection' },
+      { name: 'Under ₹3000', path: '/shop?category=Sarees&max_price=3000', description: 'Affordable elegance' },
+    ]
+  },
   { label: 'CONTACT', path: '/contact' },
-  { label: 'KURTAS & SUITS', path: '/shop?category=Kurtas%20%26%20Suits' },
-  { label: 'LEHENGAS', path: '/shop?category=Lehengas' },
-  { label: 'ACCESSORIES', path: '/shop?category=Accessories' },
-  { label: 'SALE', path: '/shop?sort=price_asc', className: 'nav-sale' },
+  {
+    label: 'KURTAS & SUITS', path: '/shop?category=Kurtas%20%26%20Suits',
+    subcategories: [
+      { name: 'All Kurtas & Suits', path: '/shop?category=Kurtas%20%26%20Suits', description: 'Complete collection' },
+      { name: 'Best Sellers', path: '/shop?category=Kurtas%20%26%20Suits&best_sellers=true', description: 'Customer favourites' },
+      { name: 'New Arrivals', path: '/shop?category=Kurtas%20%26%20Suits&new_arrivals=true', description: 'Latest designs' },
+    ]
+  },
+  {
+    label: 'LEHENGAS', path: '/shop?category=Lehengas',
+    subcategories: [
+      { name: 'All Lehengas', path: '/shop?category=Lehengas', description: 'Full lehenga collection' },
+      { name: 'Best Sellers', path: '/shop?category=Lehengas&best_sellers=true', description: 'Top picks' },
+      { name: 'New Arrivals', path: '/shop?category=Lehengas&new_arrivals=true', description: 'Fresh designs' },
+    ]
+  },
+  {
+    label: 'ACCESSORIES', path: '/shop?category=Accessories',
+    subcategories: [
+      { name: 'All Accessories', path: '/shop?category=Accessories', description: 'Complete the look' },
+      { name: 'New Arrivals', path: '/shop?category=Accessories&new_arrivals=true', description: 'Latest additions' },
+    ]
+  },
+  {
+    label: 'SALE', path: '/shop?sort=price_asc', className: 'nav-sale',
+    subcategories: [
+      { name: 'All Sale Items', path: '/shop?sort=price_asc', description: 'Shop all deals' },
+      { name: 'Sarees on Sale', path: '/shop?category=Sarees&sort=price_asc', description: 'Sarees at best prices' },
+      { name: 'Kurtas on Sale', path: '/shop?category=Kurtas%20%26%20Suits&sort=price_asc', description: 'Kurtas at best prices' },
+      { name: 'Under ₹2000', path: '/shop?max_price=2000&sort=price_asc', description: 'Budget-friendly picks' },
+    ]
+  },
 ];
+
+function NavLinkWithDropdown({ link, onNavigate }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const timeoutRef = useRef(null);
+
+  const handleMouseEnter = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsOpen(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
+  }, []);
+
+  if (!link.subcategories) {
+    return (
+      <Link
+        to={link.path}
+        className={`navbar-link ${link.className || ''}`}
+        onClick={onNavigate}
+      >
+        {link.label}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className="navbar-link-wrapper"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Link
+        to={link.path}
+        className={`navbar-link has-dropdown ${link.className || ''} ${isOpen ? 'dropdown-active' : ''}`}
+        onClick={onNavigate}
+      >
+        {link.label}
+      </Link>
+      <div className={`navbar-dropdown ${isOpen ? 'open' : ''}`}>
+        <div className="navbar-dropdown-inner">
+          <div className="navbar-dropdown-header">
+            <span className="navbar-dropdown-title">{link.label}</span>
+          </div>
+          <div className="navbar-dropdown-items">
+            {link.subcategories.map((sub) => (
+              <Link
+                key={sub.name}
+                to={sub.path}
+                className="navbar-dropdown-item"
+                onClick={() => {
+                  setIsOpen(false);
+                  onNavigate();
+                }}
+              >
+                <div className="navbar-dropdown-item-content">
+                  <span className="navbar-dropdown-item-name">{sub.name}</span>
+                  <span className="navbar-dropdown-item-desc">{sub.description}</span>
+                </div>
+                <ChevronRight size={14} className="navbar-dropdown-item-arrow" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,6 +163,8 @@ export default function Navbar() {
     }
   };
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
     <nav className="navbar" id="main-navbar">
       <div className="navbar-inner">
@@ -48,14 +176,7 @@ export default function Navbar() {
         {/* Nav links - left side */}
         <div className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}>
           {NAV_LINKS.slice(0, 6).map(link => (
-            <Link
-              key={link.label}
-              to={link.path}
-              className={`navbar-link ${link.className || ''}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
+            <NavLinkWithDropdown key={link.label} link={link} onNavigate={closeMobileMenu} />
           ))}
         </div>
 
@@ -70,14 +191,7 @@ export default function Navbar() {
         {/* Nav links - right side */}
         <div className={`navbar-links navbar-links-right ${mobileMenuOpen ? 'active' : ''}`}>
           {NAV_LINKS.slice(6).map(link => (
-            <Link
-              key={link.label}
-              to={link.path}
-              className={`navbar-link ${link.className || ''}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
+            <NavLinkWithDropdown key={link.label} link={link} onNavigate={closeMobileMenu} />
           ))}
         </div>
 
