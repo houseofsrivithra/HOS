@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { ShieldCheck, Eye, EyeOff, Lock, User, AlertCircle, ArrowLeft, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Eye, EyeOff, Lock, Mail, AlertCircle, ArrowLeft, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Admin.css';
 
@@ -47,7 +47,7 @@ export default function AdminLogin() {
         setError('Access denied: Account does not have admin privileges.');
       }
     } catch (err) {
-      setError(err.message || 'Invalid User ID or Password. Please try again.');
+      setError(err.message || 'Invalid Email ID or Password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -122,15 +122,15 @@ export default function AdminLogin() {
 
           <form onSubmit={handleSubmit} className="admin-login-form">
             <div className="admin-login-field">
-              <label htmlFor="admin-email">User ID / Email</label>
+              <label htmlFor="admin-email">E-mail ID</label>
               <div className="admin-login-input-group">
-                <User size={18} className="admin-login-icon" />
+                <Mail size={18} className="admin-login-icon" />
                 <input
                   id="admin-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Houseofsrivithra@gmail.com"
+                  placeholder="Enter Your Email ID"
                   required
                   autoFocus
                 />

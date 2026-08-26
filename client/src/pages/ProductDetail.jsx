@@ -212,7 +212,7 @@ export default function ProductDetail() {
 
             {/* Trust badges */}
             <div className="pd-trust-row">
-              <div className="pd-trust-item"><Truck size={16} /> Free Shipping above ₹1999</div>
+              <div className="pd-trust-item"><Truck size={16} /> Fast Express Shipping</div>
               <div className="pd-trust-item"><RotateCcw size={16} /> Easy 7-Day Returns</div>
               <div className="pd-trust-item"><ShieldCheck size={16} /> Secure Payments</div>
             </div>

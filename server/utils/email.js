@@ -120,10 +120,6 @@ async function sendOrderNotificationEmail(order) {
               <p style="margin: 0; font-size: 12px; color: #888; letter-spacing: 0.5px;">ORDER TOTAL</p>
               <p style="margin: 4px 0 0; font-weight: 700; color: #2e2e2e; font-size: 15px;">₹${Number(order.total).toLocaleString('en-IN')}</p>
             </div>
-            <div style="background: #fdfcf9; border-radius: 8px; padding: 14px 20px; flex: 1; min-width: 140px; border: 1px solid #e8dfd0;">
-              <p style="margin: 0; font-size: 12px; color: #888; letter-spacing: 0.5px;">PAYMENT</p>
-              <p style="margin: 4px 0 0; font-weight: 700; color: #2e2e2e; font-size: 15px;">${(order.payment_method || 'COD').toUpperCase()}</p>
-            </div>
           </div>
 
           <!-- Customer details -->

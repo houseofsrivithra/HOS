@@ -78,19 +78,17 @@ export default function Cart() {
               </div>
               <div className="cart-summary-row">
                 <span>Shipping</span>
-                <span className={shipping === 0 ? 'cart-free-shipping' : ''}>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
+                <span>From ₹99</span>
               </div>
+              <p className="cart-shipping-note" style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                Chennai: ₹99 · Rest of TN: ₹149 · Outside TN: ₹199 (Calculated at checkout)
+              </p>
               <div className="cart-summary-row">
                 <span>Tax (GST 5%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
-              {total < 1999 && (
-                <p className="cart-shipping-note">
-                  <Tag size={14} /> Add {formatPrice(1999 - total)} more for free shipping!
-                </p>
-              )}
               <div className="cart-summary-total">
-                <span>Total</span>
+                <span>Estimated Total</span>
                 <span>{formatPrice(grandTotal)}</span>
               </div>
               <Link to="/checkout" className="btn btn-gold btn-lg cart-checkout-btn" id="checkout-btn">

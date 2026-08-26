@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Download } from 'lucide-react';
-import { apiGet, apiPut, formatPrice, exportOrdersToExcel } from '../../api';
+import { Download, Trash2 } from 'lucide-react';
+import { apiGet, apiPut, apiDelete, formatPrice, exportOrdersToExcel } from '../../api';
 import './Admin.css';
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -38,6 +38,23 @@ export default function Orders() {
         setSelectedOrder(prev => ({ ...prev, status: newStatus }));
       }
     } catch (err) { alert('Error: ' + err.message); }
+  };
+
+  const deleteOrder = async (orderId, orderNumber) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to permanently delete order ${orderNumber || '#' + orderId}?\nThis action cannot be undone.`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await apiDelete(`/orders/${orderId}`);
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(null);
+      }
+      fetchOrders();
+    } catch (err) {
+      alert('Error deleting order: ' + err.message);
+    }
   };
 
   const handleExportExcel = async () => {
@@ -116,11 +133,19 @@ export default function Orders() {
                   <td>
                     <select
                       value={order.status}
-                      onChange={(e) => { e.stopPropagation(); updateStatus(order.id, e.target.value); }}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        if (e.target.value === 'delete') {
+                          deleteOrder(order.id, order.order_number);
+                        } else {
+                          updateStatus(order.id, e.target.value);
+                        }
+                      }}
                       onClick={e => e.stopPropagation()}
                       style={{ fontSize: 12, padding: '4px 8px', width: 'auto' }}
                     >
                       {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                      <option value="delete" style={{ color: '#ef4444', fontWeight: 'bold' }}>🗑️ Delete</option>
                     </select>
                   </td>
                 </tr>
@@ -140,15 +165,9 @@ export default function Orders() {
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Order:</strong> {selectedOrder.order_number}</p>
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Customer:</strong> {selectedOrder.user_name}</p>
               <p style={{ fontSize: 13, marginBottom: 4 }}><strong>Email:</strong> {selectedOrder.user_email}</p>
-              <p style={{ fontSize: 13, marginBottom: 4 }}>
-                <strong>Payment:</strong>{' '}
-                <span style={{ textTransform: 'uppercase', fontWeight: 600, color: selectedOrder.payment_method === 'razorpay' ? 'var(--moss-green)' : 'inherit' }}>
-                  {selectedOrder.payment_method === 'razorpay' ? 'Razorpay (Online Verified)' : selectedOrder.payment_method?.toUpperCase()}
-                </span>
-              </p>
               {selectedOrder.notes && (
                 <div style={{ fontSize: 12, color: 'var(--charcoal-light)', marginBottom: 10, background: 'rgba(126,140,84,0.08)', padding: '6px 10px', borderRadius: '6px', border: '1px solid rgba(126,140,84,0.15)' }}>
-                  <strong>Ref / Note:</strong> {selectedOrder.notes}
+                  <strong>Notes:</strong> {selectedOrder.notes}
                 </div>
               )}
               <p style={{ fontSize: 13, marginBottom: 16 }}>
@@ -186,6 +205,31 @@ export default function Orders() {
                   </p>
                 </div>
               )}
+
+              <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--sand-beige-light)' }}>
+                <button
+                  type="button"
+                  onClick={() => deleteOrder(selectedOrder.id, selectedOrder.order_number)}
+                  className="btn"
+                  style={{
+                    width: '100%',
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    color: '#ef4444',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    fontSize: '13px',
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    borderRadius: '6px',
+                    fontWeight: 500
+                  }}
+                >
+                  <Trash2 size={15} /> Delete Order
+                </button>
+              </div>
             </div>
           </div>
         )}

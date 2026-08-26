@@ -1,60 +1,56 @@
 const express = require('express');
-const crypto = require('crypto');
 const Razorpay = require('razorpay');
+const crypto = require('crypto');
 const { getDb } = require('../db/schema');
 const { sendOrderNotificationEmail } = require('../utils/email');
+const { calculateShipping } = require('../utils/shipping');
 
 const router = express.Router();
 
-// Initialize Razorpay with env keys
-function getRazorpay() {
-  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-    throw new Error('Razorpay keys not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to your .env file.');
-  }
-  return new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET,
-  });
-}
+// Initialize Razorpay with keys from .env
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payment/create-order
-// Creates a Razorpay order and returns the order details for the frontend popup
+// Step 1: Called when user clicks "Proceed to Pay"
+// Calculates total from DB (secure), creates a Razorpay order, returns order_id
+// ─────────────────────────────────────────────────────────────────────────────
 router.post('/create-order', async (req, res) => {
   try {
-    const { items, shipping_address, user_name, user_email } = req.body;
+    const { items, shipping_address } = req.body;
 
     if (!items || items.length === 0) {
-      return res.status(400).json({ error: 'Order must contain at least one item' });
+      return res.status(400).json({ error: 'Cart is empty' });
     }
 
-    // Calculate total from DB prices (never trust frontend price)
+    // Always calculate total from DB — never trust client-side amounts
     const db = getDb();
     let subtotal = 0;
+
     for (const item of items) {
       const product = db.prepare('SELECT price FROM products WHERE id = ?').get(item.product_id);
       if (!product) {
         db.close();
-        return res.status(400).json({ error: `Product ${item.product_id} not found` });
+        return res.status(400).json({ error: `Product not found: ${item.product_id}` });
       }
       subtotal += product.price * item.quantity;
     }
-    const shipping = subtotal >= 1999 ? 0 : 99;
-    const tax = Math.round(subtotal * 0.05 * 100) / 100;
-    const total = subtotal + shipping + tax;
     db.close();
 
-    // Razorpay expects amount in paise (1 INR = 100 paise)
-    const amountInPaise = Math.round(total * 100);
+    const shipping = calculateShipping(shipping_address || {});
+    const tax = Math.round(subtotal * 0.05);
+    const grandTotal = subtotal + shipping + tax;
 
-    const razorpay = getRazorpay();
+    // Razorpay requires amount in paise (1 INR = 100 paise)
+    const amountInPaise = Math.round(grandTotal * 100);
+
     const razorpayOrder = await razorpay.orders.create({
       amount: amountInPaise,
       currency: 'INR',
-      receipt: 'hos_' + Date.now().toString(36),
-      notes: {
-        customer_name: user_name || '',
-        customer_email: user_email || '',
-      },
+      receipt: 'HOS-' + Date.now().toString(36).toUpperCase(),
     });
 
     res.json({
@@ -64,20 +60,22 @@ router.post('/create-order', async (req, res) => {
       key_id: process.env.RAZORPAY_KEY_ID,
     });
   } catch (err) {
-    console.error('Error creating Razorpay order:', err);
-    res.status(500).json({ error: err.message || 'Failed to create payment order' });
+    console.error('Razorpay create-order error:', err);
+    res.status(500).json({ error: 'Failed to create payment order. Please try again.' });
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/payment/verify
-// Verifies Razorpay payment signature, then creates the confirmed order in DB
-router.post('/verify', (req, res) => {
+// Step 2: Called after customer completes payment on Razorpay popup
+// Verifies HMAC signature then saves order to DB and sends email notification
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/verify', async (req, res) => {
   try {
     const {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      // Order data
       items,
       shipping_address,
       user_name,
@@ -85,24 +83,21 @@ router.post('/verify', (req, res) => {
       notes,
     } = req.body;
 
-    // --- Signature Verification ---
-    if (!process.env.RAZORPAY_KEY_SECRET) {
-      return res.status(500).json({ error: 'Razorpay secret not configured' });
-    }
-
+    // Verify Razorpay payment signature (security check)
+    const hmacBody = razorpay_order_id + '|' + razorpay_payment_id;
     const expectedSignature = crypto
       .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .update(hmacBody)
       .digest('hex');
 
     if (expectedSignature !== razorpay_signature) {
-      return res.status(400).json({ error: 'Payment verification failed. Invalid signature.' });
+      return res.status(400).json({ error: 'Payment verification failed. Please contact support.' });
     }
 
-    // --- Signature verified — now create the confirmed order ---
+    // Save order to database
     const db = getDb();
-
     let subtotal = 0;
+
     const orderItems = items.map(item => {
       const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.product_id);
       if (!product) throw new Error(`Product ${item.product_id} not found`);
@@ -110,7 +105,7 @@ router.post('/verify', (req, res) => {
       const itemTotal = product.price * item.quantity;
       subtotal += itemTotal;
 
-      // Reduce inventory
+      // Reduce stock
       db.prepare('UPDATE products SET stock = stock - ? WHERE id = ?').run(item.quantity, item.product_id);
 
       return {
@@ -125,13 +120,17 @@ router.post('/verify', (req, res) => {
       };
     });
 
-    const shipping = subtotal >= 1999 ? 0 : 99;
-    const tax = Math.round(subtotal * 0.05 * 100) / 100;
+    const shipping = calculateShipping(shipping_address || {});
+    const tax = Math.round(subtotal * 0.05);
     const total = subtotal + shipping + tax;
-    const orderNumber = 'HOS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+    const orderNumber =
+      'HOS-' + Date.now().toString(36).toUpperCase() + '-' +
+      Math.random().toString(36).substring(2, 6).toUpperCase();
 
     const result = db.prepare(`
-      INSERT INTO orders (order_number, user_id, user_name, user_email, items, subtotal, shipping, tax, total, status, shipping_address, payment_method, notes)
+      INSERT INTO orders
+        (order_number, user_id, user_name, user_email, items, subtotal, shipping, tax, total, status, shipping_address, payment_method, notes)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?, 'razorpay', ?)
     `).run(
       orderNumber,
@@ -152,7 +151,6 @@ router.post('/verify', (req, res) => {
       items: JSON.parse(order.items),
       shipping_address: JSON.parse(order.shipping_address),
       razorpay_payment_id,
-      razorpay_order_id,
     };
 
     // Send email notification (non-blocking)
@@ -162,8 +160,8 @@ router.post('/verify', (req, res) => {
 
     res.status(201).json(fullOrder);
   } catch (err) {
-    console.error('Error verifying payment:', err);
-    res.status(500).json({ error: err.message || 'Failed to verify payment' });
+    console.error('Payment verify error:', err);
+    res.status(500).json({ error: 'Order creation failed after payment: ' + err.message });
   }
 });
 

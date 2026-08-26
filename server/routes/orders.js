@@ -2,6 +2,7 @@ const express = require('express');
 const { getDb } = require('../db/schema');
 const { v4: uuidv4 } = require('uuid');
 const { sendOrderNotificationEmail } = require('../utils/email');
+const { calculateShipping } = require('../utils/shipping');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const ExcelJS = require('exceljs');
 
@@ -120,7 +121,7 @@ router.get('/export/excel', requireAdmin, async (req, res) => {
         shipping: Number(order.shipping || 0),
         tax: Number(order.tax || 0),
         total: Number(order.total || 0),
-        payment_method: (order.payment_method || 'cod').toUpperCase(),
+        payment_method: order.payment_method ? order.payment_method.toUpperCase() : 'STANDARD',
         notes: order.notes || ''
       };
 
@@ -298,8 +299,8 @@ router.post('/', (req, res) => {
       };
     });
 
-    const shipping = subtotal >= 1999 ? 0 : 99;
-    const tax = Math.round(subtotal * 0.05 * 100) / 100;
+    const shipping = calculateShipping(shipping_address || {});
+    const tax = Math.round(subtotal * 0.05);
     const total = subtotal + shipping + tax;
     const orderNumber = 'HOS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
 
@@ -314,7 +315,7 @@ router.post('/', (req, res) => {
       JSON.stringify(orderItems),
       subtotal, shipping, tax, total,
       JSON.stringify(shipping_address || {}),
-      payment_method || 'cod',
+      payment_method || null,
       notes || ''
     );
 
@@ -364,6 +365,27 @@ router.put('/:id/status', requireAdmin, (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update order status' });
+  }
+});
+
+// DELETE /api/orders/:id - Delete order (Admin only)
+router.delete('/:id', requireAdmin, (req, res) => {
+  try {
+    const db = getDb();
+    const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
+    
+    if (!order) {
+      db.close();
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    db.prepare('DELETE FROM orders WHERE id = ?').run(req.params.id);
+    db.close();
+
+    res.json({ message: 'Order deleted successfully', id: req.params.id });
+  } catch (err) {
+    console.error('Error deleting order:', err);
+    res.status(500).json({ error: 'Failed to delete order' });
   }
 });
 
